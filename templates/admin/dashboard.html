@@ -1,0 +1,84 @@
+{% extends "base_admin.html" %}
+{% block page_title %}Tableau de bord principal{% endblock %}
+
+{% block admin_content %}
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="jci-card p-4">
+      <div class="small text-muted">Actions</div>
+      <div class="h2 fw-bold tabular-nums mt-2 mb-1">{{ total_actions }}</div>
+      <div class="small text-jci-cyan fw-semibold tabular-nums">{{ published_actions }} publiée(s)</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="jci-card p-4">
+      <div class="small text-muted">Récompenses</div>
+      <div class="h2 fw-bold tabular-nums mt-2 mb-1">{{ total_awards }}</div>
+      <div class="small text-jci-turquoise fw-semibold tabular-nums">{{ published_awards }} publiée(s)</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="jci-card p-4">
+      <div class="small text-muted">Manifestations</div>
+      <div class="h2 fw-bold tabular-nums mt-2 mb-1">{{ total_manifestations }}</div>
+      <div class="small text-jci-cyan fw-semibold tabular-nums">{{ published_manifestations }} publiée(s)</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="jci-card p-4">
+      <div class="small text-muted">Éléments historiques</div>
+      <div class="h2 fw-bold tabular-nums mt-2 mb-1">{{ total_history }}</div>
+      <div class="small text-jci-turquoise fw-semibold tabular-nums">{{ published_history }} publié(s)</div>
+    </div>
+  </div>
+</div>
+
+<div class="jci-card p-4 mb-4">
+  <h2 class="h6 fw-bold mb-3">Raccourcis rapides</h2>
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{% url 'actions:admin_create' %}" class="btn btn-jci-primary btn-sm px-3"><i class="bi bi-plus-lg me-1"></i> Nouvelle action</a>
+    <a href="{% url 'awards:admin_create' %}" class="btn btn-jci-navy btn-sm px-3"><i class="bi bi-plus-lg me-1"></i> Nouvelle récompense</a>
+    <a href="{% url 'history:admin_create' %}" class="btn btn-outline-secondary btn-sm px-3"><i class="bi bi-plus-lg me-1"></i> Nouvel événement historique</a>
+    <a href="{% url 'manifestations:admin_create' %}" class="btn btn-outline-secondary btn-sm px-3"><i class="bi bi-plus-lg me-1"></i> Nouvelle manifestation</a>
+    <a href="{% url 'core:admin_media_list' %}" class="btn btn-outline-secondary btn-sm px-3"><i class="bi bi-images me-1"></i> Médiathèque ({{ total_media }})</a>
+  </div>
+</div>
+
+<div class="jci-card overflow-hidden">
+  <div class="p-4 border-bottom bg-white">
+    <h2 class="h6 fw-bold mb-0">Derniers contenus ajoutés ou modifiés</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light small">
+        <tr>
+          <th class="ps-4">Rubrique</th>
+          <th>Titre</th>
+          <th>Statut</th>
+          <th class="pe-4">Mise à jour</th>
+        </tr>
+      </thead>
+      <tbody class="small">
+        {% for module, label, status, updated in recent_items %}
+          <tr>
+            <td class="ps-4 text-muted">{{ module }}</td>
+            <td class="fw-semibold">{{ label }}</td>
+            <td>
+              {% if status == 'published' %}
+                <span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Publié</span>
+              {% else %}
+                <span class="text-warning fw-semibold"><i class="bi bi-pencil-square me-1"></i>Brouillon</span>
+              {% endif %}
+            </td>
+            <td class="pe-4 text-muted tabular-nums">{{ updated|date:"d/m/Y H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">Aucun contenu enregistré pour le moment.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

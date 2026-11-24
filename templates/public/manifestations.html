@@ -1,0 +1,69 @@
+{% extends "base_public.html" %}
+{% block title %}Manifestations — JCI Grombalia{% endblock %}
+
+{% block content %}
+<section class="bg-jci-surface border-bottom py-5">
+  <div class="container">
+    <div class="small fw-semibold text-jci-cyan mb-2">Rayonnement & Délégations</div>
+    <h1 class="h2 fw-bold mb-3">Participations aux manifestations</h1>
+    <p class="text-muted mb-0" style="max-width: 720px;">
+      Engagement des membres de la JCI Grombalia lors des assises zonales et congrès nationaux.
+    </p>
+  </div>
+</section>
+
+<section class="py-5 bg-white">
+  <div class="container">
+    <form method="get" class="row g-3 align-items-center pb-4 mb-4 border-bottom">
+      <div class="col-md-8">
+        <div class="btn-group bg-jci-surface p-1 rounded-3 border">
+          <a href="?type=all&annee={{ selected_year }}" class="btn btn-sm {% if selected_type == 'all' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Toutes</a>
+          <a href="?type=zonale&annee={{ selected_year }}" class="btn btn-sm {% if selected_type == 'zonale' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Zonales</a>
+          <a href="?type=nationale&annee={{ selected_year }}" class="btn btn-sm {% if selected_type == 'nationale' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Nationales</a>
+        </div>
+      </div>
+      <div class="col-md-4 d-flex justify-content-md-end align-items-center gap-2">
+        <input type="hidden" name="type" value="{{ selected_type }}" />
+        <label for="manifYear" class="small fw-semibold text-muted">Année :</label>
+        <select id="manifYear" name="annee" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+          <option value="all">Toutes les années</option>
+          {% for y in available_years %}
+            <option value="{{ y }}" {% if selected_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+
+    <div class="row g-4">
+      {% for m in manifestations %}
+        <div class="col-md-6">
+          <article class="jci-card h-100 overflow-hidden d-flex flex-column">
+            {% if m.cover_image %}
+              <img src="{{ m.cover_image.url }}" alt="{{ m.name }}" class="w-100 object-fit-cover" style="height: 240px;" />
+            {% endif %}
+            <div class="p-4 flex-grow-1 d-flex flex-column">
+              <div class="small text-muted mb-2">
+                <span class="fw-semibold text-jci-cyan">{{ m.get_type_display }}</span> · {{ m.event_date|date:"d/m/Y" }} · <i class="bi bi-geo-alt text-jci-turquoise"></i> {{ m.location }}
+              </div>
+              <h2 class="h5 fw-bold mb-2">{{ m.name }}</h2>
+              <p class="small text-muted flex-grow-1">{{ m.description|truncatewords:28 }}</p>
+              <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                <span class="small text-muted tabular-nums">{{ m.participations.count }} participant(s)</span>
+                <a href="{% url 'manifestations:detail' m.pk %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+                  Détails & compte rendu <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-5 rounded-4 bg-jci-surface text-center text-muted">
+            Aucune manifestation publiée pour ces critères.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

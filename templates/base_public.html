@@ -1,0 +1,117 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}JCI Grombalia — Site Officiel{% endblock %}</title>
+    <meta name="description" content="Site officiel de la Jeune Chambre Internationale (JCI) Grombalia : histoire, récompenses, actions citoyennes et participations aux manifestations." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="{% static 'css/jci_theme.css' %}" rel="stylesheet" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Sticky Navbar -->
+    <header class="sticky-top jci-navbar">
+      <nav class="navbar navbar-expand-lg py-2" aria-label="Navigation principale">
+        <div class="container">
+          <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+            <img src="{% static 'images/jci_grombalia_logo.jpg' %}" alt="Logo JCI Grombalia" height="44" />
+          </a>
+          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mx-auto gap-lg-2">
+              <li class="nav-item">
+                <a class="nav-link jci-nav-link {% if request.resolver_match.app_name == 'core' %}active{% endif %}" href="{% url 'core:home' %}">Accueil</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link jci-nav-link {% if request.resolver_match.app_name == 'history' %}active{% endif %}" href="{% url 'history:list' %}">Historique</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link jci-nav-link {% if request.resolver_match.app_name == 'awards' %}active{% endif %}" href="{% url 'awards:list' %}">Récompenses</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link jci-nav-link {% if request.resolver_match.app_name == 'actions' %}active{% endif %}" href="{% url 'actions:list' %}">Nos actions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link jci-nav-link {% if request.resolver_match.app_name == 'manifestations' %}active{% endif %}" href="{% url 'manifestations:list' %}">Manifestations</a>
+              </li>
+            </ul>
+            <div class="d-flex mt-3 mt-lg-0">
+              {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'core:admin_dashboard' %}" class="btn btn-jci-navy btn-sm px-3 py-2">
+                  <i class="bi bi-shield-check me-1"></i> Dashboard Admin
+                </a>
+              {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-jci-primary btn-sm px-3 py-2">
+                  <i class="bi bi-lock me-1"></i> Espace Admin
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow-1">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-jci-navy text-white pt-5 pb-4 mt-auto">
+      <div class="container">
+        <div class="row g-4 pb-4 border-bottom border-white border-opacity-10">
+          <div class="col-lg-5">
+            <div class="d-inline-block bg-white rounded-3 p-2 mb-3">
+              <img src="{% static 'images/jci_grombalia_logo.jpg' %}" alt="Logo JCI Grombalia" height="44" />
+            </div>
+            <p class="small text-white-50 mb-0" style="max-width: 380px;">
+              {{ site_settings.tagline|default:"Jeune Chambre Internationale de Grombalia" }} — Leadership, engagement citoyen et développement communautaire.
+            </p>
+          </div>
+          <div class="col-lg-3">
+            <h6 class="text-white fw-semibold mb-3">Navigation</h6>
+            <ul class="list-unstyled small d-grid gap-2">
+              <li><a href="{% url 'core:home' %}" class="text-white-50 text-decoration-none">Accueil</a></li>
+              <li><a href="{% url 'history:list' %}" class="text-white-50 text-decoration-none">Historique</a></li>
+              <li><a href="{% url 'awards:list' %}" class="text-white-50 text-decoration-none">Récompenses</a></li>
+              <li><a href="{% url 'actions:list' %}" class="text-white-50 text-decoration-none">Nos actions</a></li>
+              <li><a href="{% url 'manifestations:list' %}" class="text-white-50 text-decoration-none">Manifestations</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-4">
+            <h6 class="text-white fw-semibold mb-3">Coordonnées & Réseaux</h6>
+            <ul class="list-unstyled small text-white-50 d-grid gap-2">
+              <li><i class="bi bi-geo-alt text-jci-turquoise me-2"></i>{{ site_settings.address|default:"Grombalia 8030, Nabeul, Tunisie" }}</li>
+              <li><i class="bi bi-envelope text-jci-turquoise me-2"></i>{{ site_settings.email|default:"contact@jcigrombalia.tn" }}</li>
+              <li><i class="bi bi-telephone text-jci-turquoise me-2"></i>{{ site_settings.phone|default:"+216 00 000 000" }}</li>
+            </ul>
+            <div class="d-flex gap-3 mt-3 small">
+              {% if site_settings.facebook_url %}
+                <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener" class="text-jci-turquoise text-decoration-none">Facebook</a>
+              {% endif %}
+              {% if site_settings.instagram_url %}
+                <a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener" class="text-jci-turquoise text-decoration-none">Instagram</a>
+              {% endif %}
+              {% if site_settings.linkedin_url %}
+                <a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener" class="text-jci-turquoise text-decoration-none">LinkedIn</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 d-flex flex-column flex-sm-row justify-content-between align-items-center small text-white-50">
+          <span>&copy; {% now "Y" %} {{ site_settings.org_name|default:"JCI Grombalia" }}. Tous droits réservés.</span>
+          <a href="{% url 'accounts:login' %}" class="text-white-50 text-decoration-none">Administration</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

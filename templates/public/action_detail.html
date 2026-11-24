@@ -1,0 +1,75 @@
+{% extends "base_public.html" %}
+{% block title %}{{ action.title }} — JCI Grombalia{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+  <div class="container">
+    <a href="{% url 'actions:list' %}" class="small fw-semibold text-jci-cyan text-decoration-none d-inline-block mb-4">
+      <i class="bi bi-arrow-left me-1"></i> Retour à toutes les actions
+    </a>
+
+    <div class="small text-muted mb-2">
+      <span class="fw-semibold text-jci-cyan">{{ action.category }}</span> · {{ action.action_type }} · <span class="tabular-nums">{{ action.action_date|date:"d/m/Y" }}</span>
+    </div>
+    <h1 class="h2 fw-bold mb-4">{{ action.title }}</h1>
+
+    {% if action.cover_image %}
+      <div class="rounded-4 overflow-hidden border shadow-sm mb-5">
+        <img src="{{ action.cover_image.url }}" alt="{{ action.title }}" class="w-100 object-fit-cover" style="max-height: 460px;" />
+      </div>
+    {% endif %}
+
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <h2 class="h5 fw-bold mb-3">Présentation de l'action</h2>
+        <p class="text-muted mb-4" style="white-space: pre-line;">{{ action.description }}</p>
+
+        {% if action.outcome %}
+          <div class="p-4 rounded-4 bg-jci-surface border">
+            <h3 class="h6 fw-bold mb-2">Bilan & Impact</h3>
+            <p class="small text-muted mb-0" style="white-space: pre-line;">{{ action.outcome }}</p>
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="jci-card p-4">
+          <div class="pb-3 mb-3 border-bottom">
+            <div class="small text-muted">Date de réalisation</div>
+            <div class="fw-semibold tabular-nums">{{ action.action_date|date:"d/m/Y" }}</div>
+          </div>
+          <div class="pb-3 mb-3 border-bottom">
+            <div class="small text-muted">Année</div>
+            <div class="fw-semibold tabular-nums">{{ action.year }}</div>
+          </div>
+          <div class="pb-3 mb-3 border-bottom">
+            <div class="small text-muted">Catégorie</div>
+            <div class="fw-semibold">{{ action.category }}</div>
+          </div>
+          <div>
+            <div class="small text-muted">Type d'action</div>
+            <div class="fw-semibold">{{ action.action_type }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if action.images.all %}
+      <div class="mt-5 pt-4 border-top">
+        <h2 class="h5 fw-bold mb-4">Galerie photographique</h2>
+        <div class="row g-4">
+          {% for img in action.images.all %}
+            <div class="col-sm-6 col-md-4">
+              <div class="rounded-3 overflow-hidden border">
+                <img src="{{ img.image.url }}" alt="{{ img.caption|default:action.title }}" class="w-100 object-fit-cover" style="height: 220px;" />
+                {% if img.caption %}
+                  <div class="p-2 small text-muted bg-white border-top">{{ img.caption }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

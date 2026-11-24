@@ -1,0 +1,61 @@
+{% extends "base_admin.html" %}
+{% block page_title %}Gestion des médias{% endblock %}
+
+{% block admin_content %}
+<div class="jci-card p-4 mb-4">
+  <h2 class="h6 fw-bold mb-3">Téléverser une image ou un document</h2>
+  <form method="post" enctype="multipart/form-data" class="row g-3 align-items-end">
+    {% csrf_token %}
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold">{{ form.title.label }}</label>
+      {{ form.title }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold">{{ form.section.label }}</label>
+      {{ form.section }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold">{{ form.file.label }}</label>
+      {{ form.file }}
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-jci-primary btn-sm py-2">Téléverser</button>
+    </div>
+  </form>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="?section=all" class="btn btn-sm {% if selected_section == 'all' %}btn-jci-navy{% else %}btn-light border{% endif %}">Tous</a>
+  <a href="?section=general" class="btn btn-sm {% if selected_section == 'general' %}btn-jci-navy{% else %}btn-light border{% endif %}">Général</a>
+  <a href="?section=history" class="btn btn-sm {% if selected_section == 'history' %}btn-jci-navy{% else %}btn-light border{% endif %}">Historique</a>
+  <a href="?section=awards" class="btn btn-sm {% if selected_section == 'awards' %}btn-jci-navy{% else %}btn-light border{% endif %}">Récompenses</a>
+  <a href="?section=actions" class="btn btn-sm {% if selected_section == 'actions' %}btn-jci-navy{% else %}btn-light border{% endif %}">Actions</a>
+  <a href="?section=manifestations" class="btn btn-sm {% if selected_section == 'manifestations' %}btn-jci-navy{% else %}btn-light border{% endif %}">Manifestations</a>
+</div>
+
+<div class="row g-4">
+  {% for asset in assets %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="jci-card overflow-hidden h-100 d-flex flex-column">
+        <img src="{{ asset.file.url }}" alt="{{ asset.title }}" class="w-100 object-fit-cover bg-jci-surface" style="height: 160px;" />
+        <div class="p-3 flex-grow-1 d-flex flex-column justify-content-between">
+          <div>
+            <div class="fw-semibold small text-truncate">{{ asset.title }}</div>
+            <div class="small text-muted">{{ asset.get_section_display }}</div>
+          </div>
+          <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
+            <a href="{{ asset.file.url }}" target="_blank" rel="noopener" class="small text-jci-cyan text-decoration-none">Ouvrir</a>
+            <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-delete-url="{% url 'core:admin_media_delete' asset.pk %}" data-item-label="{{ asset.title }}">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="p-5 rounded-4 bg-white border text-center text-muted small">
+        Aucun média enregistré dans cette rubrique.
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

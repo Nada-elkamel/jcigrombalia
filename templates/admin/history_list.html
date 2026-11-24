@@ -1,0 +1,49 @@
+{% extends "base_admin.html" %}
+{% block page_title %}Gestion de l'historique{% endblock %}
+{% block page_actions %}
+  <a href="{% url 'history:admin_create' %}" class="btn btn-jci-primary btn-sm px-3">
+    <i class="bi bi-plus-lg me-1"></i> Ajouter un événement
+  </a>
+{% endblock %}
+
+{% block admin_content %}
+<div class="jci-card overflow-hidden">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light small">
+        <tr>
+          <th class="ps-4">Date / Période</th>
+          <th>Titre</th>
+          <th>Catégorie</th>
+          <th>Ordre</th>
+          <th>Statut</th>
+          <th class="text-end pe-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="small">
+        {% for ev in events %}
+          <tr>
+            <td class="ps-4 fw-semibold text-jci-cyan tabular-nums">{{ ev.event_date }}</td>
+            <td class="fw-semibold">{{ ev.title }}</td>
+            <td>{{ ev.get_category_display }}</td>
+            <td class="tabular-nums">{{ ev.display_order }}</td>
+            <td>
+              {% if ev.status == 'published' %}
+                <span class="text-success fw-semibold">Publié</span>
+              {% else %}
+                <span class="text-warning fw-semibold">Brouillon</span>
+              {% endif %}
+            </td>
+            <td class="text-end pe-4">
+              <a href="{% url 'history:admin_edit' ev.pk %}" class="btn btn-sm btn-outline-secondary me-1">Modifier</a>
+              <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-delete-url="{% url 'history:admin_delete' ev.pk %}" data-item-label="{{ ev.title }}">Supprimer</button>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="text-center text-muted py-4">Aucun événement historique enregistré.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base_admin.html" %}
+{% block page_title %}{% if is_edit %}Modifier l'action{% else %}Nouvelle action{% endif %}{% endblock %}
+
+{% block admin_content %}
+<div class="jci-card p-4 mb-4">
+  <form method="post" enctype="multipart/form-data" class="row g-3">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="col-md-6">
+        <label for="{{ field.id_for_label }}" class="form-label small fw-semibold">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="col-12">
+      <label for="id_gallery_images" class="form-label small fw-semibold">Ajouter plusieurs photographies à la galerie</label>
+      <input type="file" id="id_gallery_images" name="gallery_images" multiple accept="image/*" class="form-control" />
+    </div>
+
+    <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+      <a href="{% url 'actions:admin_list' %}" class="btn btn-light btn-sm px-3">Annuler</a>
+      <button type="submit" class="btn btn-jci-primary btn-sm px-4">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+{% if is_edit and obj.images.all %}
+  <div class="jci-card p-4">
+    <h2 class="h6 fw-bold mb-3">Photographies actuelles de la galerie</h2>
+    <div class="row g-3">
+      {% for img in obj.images.all %}
+        <div class="col-6 col-md-3">
+          <div class="border rounded-3 overflow-hidden">
+            <img src="{{ img.image.url }}" alt="Photo" class="w-100 object-fit-cover" style="height: 140px;" />
+            <div class="p-2 text-end bg-white">
+              <form method="post" action="{% url 'actions:admin_image_delete' obj.pk img.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">Retirer</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

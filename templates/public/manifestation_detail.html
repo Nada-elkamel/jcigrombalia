@@ -1,0 +1,72 @@
+{% extends "base_public.html" %}
+{% block title %}{{ manifestation.name }} — JCI Grombalia{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+  <div class="container">
+    <a href="{% url 'manifestations:list' %}" class="small fw-semibold text-jci-cyan text-decoration-none d-inline-block mb-4">
+      <i class="bi bi-arrow-left me-1"></i> Retour aux manifestations
+    </a>
+
+    <div class="small text-muted mb-2">
+      <span class="fw-semibold text-jci-cyan">Manifestation {{ manifestation.get_type_display|lower }}</span> · <span class="tabular-nums">{{ manifestation.event_date|date:"d/m/Y" }}</span> · {{ manifestation.location }}
+    </div>
+    <h1 class="h2 fw-bold mb-4">{{ manifestation.name }}</h1>
+
+    {% if manifestation.cover_image %}
+      <div class="rounded-4 overflow-hidden border shadow-sm mb-5">
+        <img src="{{ manifestation.cover_image.url }}" alt="{{ manifestation.name }}" class="w-100 object-fit-cover" style="max-height: 460px;" />
+      </div>
+    {% endif %}
+
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <h2 class="h5 fw-bold mb-3">Présentation</h2>
+        <p class="text-muted mb-4" style="white-space: pre-line;">{{ manifestation.description }}</p>
+
+        {% if manifestation.report %}
+          <div class="p-4 rounded-4 bg-jci-surface border">
+            <h3 class="h6 fw-bold mb-2">Compte rendu de participation</h3>
+            <p class="small text-muted mb-0" style="white-space: pre-line;">{{ manifestation.report }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-lg-5">
+        <div class="jci-card p-4">
+          <h2 class="h6 fw-bold mb-3"><i class="bi bi-people text-jci-turquoise me-2"></i>Membres participants</h2>
+          {% if manifestation.participations.all %}
+            <ul class="list-group list-group-flush">
+              {% for p in manifestation.participations.all %}
+                <li class="list-group-item px-0">
+                  <div class="fw-semibold small">{{ p.participant_name }}</div>
+                  {% if p.role_info %}
+                    <div class="small text-muted">{{ p.role_info }}</div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="small text-muted mb-0">Liste des participants non renseignée.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if manifestation.images.all %}
+      <div class="mt-5 pt-4 border-top">
+        <h2 class="h5 fw-bold mb-4">Photographies de la délégation</h2>
+        <div class="row g-4">
+          {% for img in manifestation.images.all %}
+            <div class="col-sm-6 col-md-4">
+              <div class="rounded-3 overflow-hidden border">
+                <img src="{{ img.image.url }}" alt="{{ img.caption|default:manifestation.name }}" class="w-100 object-fit-cover" style="height: 220px;" />
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

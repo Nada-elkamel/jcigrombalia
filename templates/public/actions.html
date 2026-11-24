@@ -1,0 +1,79 @@
+{% extends "base_public.html" %}
+{% block title %}Nos actions — JCI Grombalia{% endblock %}
+
+{% block content %}
+<section class="bg-jci-surface border-bottom py-5">
+  <div class="container">
+    <div class="small fw-semibold text-jci-cyan mb-2">Impact & Projets</div>
+    <h1 class="h2 fw-bold mb-3">Nos actions sur le terrain</h1>
+    <p class="text-muted mb-0" style="max-width: 720px;">
+      Découvrez l'ensemble des actions citoyennes, formations et projets communautaires menés par la JCI Grombalia.
+    </p>
+  </div>
+</section>
+
+<section class="py-5 bg-white">
+  <div class="container">
+    <form method="get" class="row g-3 pb-4 mb-4 border-bottom">
+      <div class="col-md-4">
+        <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par titre..." />
+      </div>
+      <div class="col-md-2">
+        <select name="annee" class="form-select">
+          <option value="all">Toutes années</option>
+          {% for y in years %}
+            <option value="{{ y }}" {% if selected_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="categorie" class="form-select">
+          <option value="all">Toutes catégories</option>
+          {% for c in categories %}
+            <option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="type" class="form-select">
+          <option value="all">Tous types</option>
+          {% for t in types %}
+            <option value="{{ t }}" {% if selected_type == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1 d-grid">
+        <button type="submit" class="btn btn-jci-primary">Filtrer</button>
+      </div>
+    </form>
+
+    <div class="row g-4">
+      {% for action in actions %}
+        <div class="col-md-6 col-lg-4">
+          <article class="jci-card h-100 overflow-hidden d-flex flex-column">
+            {% if action.cover_image %}
+              <img src="{{ action.cover_image.url }}" alt="{{ action.title }}" class="w-100 object-fit-cover" style="height: 220px;" />
+            {% endif %}
+            <div class="p-4 flex-grow-1 d-flex flex-column">
+              <div class="small text-muted mb-2">
+                <span class="fw-semibold text-jci-cyan">{{ action.category }}</span> · {{ action.action_type }} · <span class="tabular-nums">{{ action.year }}</span>
+              </div>
+              <h2 class="h6 fw-bold mb-2">{{ action.title }}</h2>
+              <p class="small text-muted flex-grow-1">{{ action.description|truncatewords:25 }}</p>
+              <a href="{% url 'actions:detail' action.pk %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+                Voir la fiche complète <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-5 rounded-4 bg-jci-surface text-center text-muted">
+            Aucune action ne correspond à votre recherche.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

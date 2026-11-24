@@ -1,0 +1,199 @@
+{% extends "base_public.html" %}
+{% load static %}
+
+{% block title %}{{ site_settings.org_name|default:"JCI Grombalia" }} — Accueil{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-white">
+  <div class="container py-lg-3">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <img src="{% static 'images/jci_grombalia_logo.jpg' %}" alt="Logo JCI Grombalia" height="54" />
+          <span class="vr"></span>
+          <span class="small fw-semibold text-jci-cyan">
+            {{ site_settings.tagline|default:"Jeune Chambre Internationale de Grombalia" }}
+          </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-4">
+          {{ site_settings.hero_title|default:"Former des leaders citoyens pour un impact durable à Grombalia" }}
+        </h1>
+        <p class="lead fs-6 text-muted mb-4">
+          {{ site_settings.hero_subtitle }}
+        </p>
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+          <a href="{% url 'history:list' %}" class="btn btn-jci-primary px-4 py-2">
+            Découvrir notre histoire <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+          <a href="{% url 'actions:list' %}" class="fw-semibold text-jci-navy text-decoration-none small">
+            Explorer nos actions <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="rounded-4 overflow-hidden border shadow-sm">
+          <img src="{% static 'images/hero_jci_grombalia.jpg' %}" alt="JCI Grombalia" class="img-fluid w-100 object-fit-cover" style="max-height: 410px;" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Statistics Strip -->
+<section class="bg-jci-surface border-top border-bottom py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-lg-3">
+        <div class="pt-3 jci-kpi-top-turquoise">
+          <div class="small text-muted">Années d'existence</div>
+          <div class="h2 fw-bold tabular-nums mt-1 mb-0">
+            {% if years_existence is not None %}{{ years_existence }}{% else %}—{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="pt-3 jci-kpi-top-cyan">
+          <div class="small text-muted">Actions réalisées</div>
+          <div class="h2 fw-bold tabular-nums mt-1 mb-0">{{ actions_count }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="pt-3 jci-kpi-top-navy">
+          <div class="small text-muted">Récompenses</div>
+          <div class="h2 fw-bold tabular-nums mt-1 mb-0">{{ awards_count }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="pt-3 jci-kpi-top-turquoise">
+          <div class="small text-muted">Manifestations</div>
+          <div class="h2 fw-bold tabular-nums mt-1 mb-0">{{ manifestations_count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Latest Actions -->
+<section class="py-5 bg-white">
+  <div class="container py-lg-2">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="h3 fw-bold mb-1">Dernières actions</h2>
+        <p class="text-muted small mb-0">Projets citoyens et formations portés par la JCI Grombalia.</p>
+      </div>
+      <a href="{% url 'actions:list' %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+        Toutes les actions <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+    <div class="row g-4">
+      {% for action in latest_actions %}
+        <div class="col-md-4">
+          <div class="jci-card h-100 overflow-hidden d-flex flex-column">
+            {% if action.cover_image %}
+              <img src="{{ action.cover_image.url }}" alt="{{ action.title }}" class="w-100 object-fit-cover" style="height: 210px;" />
+            {% endif %}
+            <div class="p-4 flex-grow-1 d-flex flex-column">
+              <div class="small text-muted mb-2">
+                <span class="text-jci-cyan fw-semibold">{{ action.category }}</span> · {{ action.year }}
+              </div>
+              <h3 class="h6 fw-bold mb-2">{{ action.title }}</h3>
+              <p class="small text-muted flex-grow-1">{{ action.description|truncatewords:22 }}</p>
+              <a href="{% url 'actions:detail' action.pk %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+                Consulter l'action <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-4 rounded-4 bg-jci-surface text-center text-muted small">
+            Aucune action publiée pour le moment.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Latest Awards -->
+<section class="py-5 bg-jci-surface border-top border-bottom">
+  <div class="container py-lg-2">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="h3 fw-bold mb-1">Distinctions & Récompenses</h2>
+        <p class="text-muted small mb-0">Reconnaissances locales, zonales, nationales et internationales.</p>
+      </div>
+      <a href="{% url 'awards:list' %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+        Voir le palmarès <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+    <div class="row g-4">
+      {% for award in latest_awards %}
+        <div class="col-md-4">
+          <div class="jci-card h-100 overflow-hidden">
+            {% if award.image and not award.is_pdf %}
+              <img src="{{ award.image.url }}" alt="{{ award.title }}" class="w-100 object-fit-cover" style="height: 200px;" />
+            {% endif %}
+            <div class="p-4">
+              <div class="small text-muted mb-2">
+                <span class="text-jci-turquoise fw-semibold">{{ award.get_level_display }}</span> · {{ award.year }}
+              </div>
+              <h3 class="h6 fw-bold mb-2">{{ award.title }}</h3>
+              <p class="small text-muted mb-0">{{ award.description|truncatewords:22 }}</p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-4 rounded-4 bg-white text-center text-muted small">
+            Aucune récompense publiée pour le moment.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Recent Manifestations -->
+<section class="py-5 bg-white">
+  <div class="container py-lg-2">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="h3 fw-bold mb-1">Participations récentes aux manifestations</h2>
+        <p class="text-muted small mb-0">Présence de nos délégations aux assises zonales et nationales.</p>
+      </div>
+      <a href="{% url 'manifestations:list' %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+        Toutes les manifestations <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+    <div class="row g-4">
+      {% for m in latest_manifestations %}
+        <div class="col-md-4">
+          <div class="jci-card h-100 overflow-hidden d-flex flex-column">
+            {% if m.cover_image %}
+              <img src="{{ m.cover_image.url }}" alt="{{ m.name }}" class="w-100 object-fit-cover" style="height: 200px;" />
+            {% endif %}
+            <div class="p-4 flex-grow-1 d-flex flex-column">
+              <div class="small text-muted mb-2">
+                <span class="text-jci-cyan fw-semibold">{{ m.get_type_display }}</span> · {{ m.location }} · {{ m.year }}
+              </div>
+              <h3 class="h6 fw-bold mb-2">{{ m.name }}</h3>
+              <p class="small text-muted flex-grow-1">{{ m.description|truncatewords:20 }}</p>
+              <a href="{% url 'manifestations:detail' m.pk %}" class="small fw-semibold text-jci-cyan text-decoration-none">
+                Détails & compte rendu <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-4 rounded-4 bg-jci-surface text-center text-muted small">
+            Aucune manifestation publiée pour le moment.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

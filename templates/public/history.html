@@ -1,0 +1,77 @@
+{% extends "base_public.html" %}
+{% block title %}Historique — JCI Grombalia{% endblock %}
+
+{% block content %}
+<section class="bg-jci-surface border-bottom py-5">
+  <div class="container">
+    <div class="small fw-semibold text-jci-cyan mb-2">
+      Archives & Parcours
+      {% if site_settings.founding_year %} · Fondée en {{ site_settings.founding_year }}{% endif %}
+    </div>
+    <h1 class="h2 fw-bold mb-3">Histoire & Évolution de la JCI Grombalia</h1>
+    <p class="text-muted mb-0" style="max-width: 720px;">
+      {{ site_settings.history_intro }}
+    </p>
+  </div>
+</section>
+
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-5">
+      <div class="btn-group bg-jci-surface p-1 rounded-3 border" role="group" aria-label="Filtrer la chronologie">
+        <a href="?filtre=all" class="btn btn-sm {% if filter_type == 'all' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Toute la chronologie</a>
+        <a href="?filtre=events" class="btn btn-sm {% if filter_type == 'events' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Événements marquants</a>
+        <a href="?filtre=presidents" class="btn btn-sm {% if filter_type == 'presidents' %}btn-light shadow-sm fw-semibold{% else %}btn-link text-decoration-none text-dark{% endif %}">Anciens présidents & bureaux</a>
+      </div>
+      <span class="small text-muted tabular-nums">{{ events|length }} élément(s) publié(s)</span>
+    </div>
+
+    {% if events %}
+      <div class="timeline-wrapper d-grid gap-4">
+        {% for ev in events %}
+          <article class="timeline-item">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <div class="jci-card overflow-hidden">
+              <div class="row g-0">
+                {% if ev.image %}
+                  <div class="col-md-4">
+                    <img src="{{ ev.image.url }}" alt="{{ ev.title }}" class="w-100 h-100 object-fit-cover" style="min-height: 220px;" />
+                  </div>
+                {% endif %}
+                <div class="{% if ev.image %}col-md-8{% else %}col-12{% endif %} p-4 p-lg-5">
+                  <div class="small text-muted mb-2">
+                    <span class="fw-semibold text-jci-cyan tabular-nums">{{ ev.event_date }}</span> · {{ ev.get_category_display }}
+                  </div>
+                  <h2 class="h5 fw-bold mb-3">{{ ev.title }}</h2>
+                  <p class="text-muted mb-0" style="white-space: pre-line;">{{ ev.description }}</p>
+
+                  {% if ev.president_name or ev.board_members %}
+                    <div class="row g-3 mt-4 pt-3 border-top">
+                      {% if ev.president_name %}
+                        <div class="col-sm-5">
+                          <div class="small text-muted fw-semibold">Présidence</div>
+                          <div class="fw-semibold">{{ ev.president_name }}</div>
+                        </div>
+                      {% endif %}
+                      {% if ev.board_members %}
+                        <div class="col-sm-7">
+                          <div class="small text-muted fw-semibold">Bureau Exécutif</div>
+                          <div class="small text-muted">{{ ev.board_members }}</div>
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="p-5 rounded-4 bg-jci-surface text-center text-muted">
+        Aucun élément historique publié dans cette catégorie.
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
